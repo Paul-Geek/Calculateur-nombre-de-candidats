@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="fr" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculateur du Nombre de Candidats</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+        body {
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --bleu-fonce: #111F49;
+            --blanc: #FFFFFF;
+            --bleu-clair: #38B6FF;
+            --bleu-ciel: #F0F7FB;
+            --bleu-ciel-2: #96DDF8;
+        }
+        
+        .calculator-card {
+            transition: all 0.3s ease;
+        }
+        .calculator-card:hover {
+            transform: translateY(-2px);
+        }
+        .result-animation {
+            animation: slideIn 0.5s ease-out;
+        }
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .bg-primary { background-color: var(--bleu-fonce); }
+        .bg-secondary { background-color: var(--bleu-clair); }
+        .bg-light { background-color: var(--bleu-ciel); }
+        .text-primary { color: var(--bleu-fonce); }
+        .text-secondary { color: var(--bleu-clair); }
+        .hover-secondary:hover { background-color: var(--bleu-clair); }
+    </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="/_sdk/element_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full bg-light font-sans">
+  <div class="max-w-4xl mx-auto px-4 py-8">
+   <section>
+    <div class="bg-white rounded-xl shadow-lg p-8 calculator-card">
+     <div class="mb-8">
+      <h2 class="text-3xl font-bold text-primary mb-4">Calculateur du Nombre de Candidats</h2>
+      <p class="text-lg text-gray-600">Déterminez le nombre minimum et maximum de candidats requis sur votre liste électorale selon les règles en vigueur.</p>
+     </div>
+     <form onsubmit="calculateListes(event)" class="space-y-6">
+      <div><label for="population-listes" class="block text-lg font-medium text-gray-700 mb-3"> Population de la commune </label> <input type="number" id="population-listes" name="population-listes" min="1" class="w-full px-6 py-4 text-lg border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Ex: 15000" required>
+      </div><button type="submit" class="w-full bg-secondary text-white py-4 px-8 rounded-lg font-medium text-lg hover-secondary transition-colors"> Calculer le nombre de candidats requis </button>
+     </form>
+     <div id="result-listes" class="mt-8 hidden"></div>
+    </div>
+   </section>
+  </div>
+  <script>
+        function calculateListes(event) {
+            event.preventDefault();
+            const population = parseInt(document.getElementById('population-listes').value);
+            
+            let minCandidats, maxCandidats;
+            
+            if (population < 100) {
+                minCandidats = 5;
+                maxCandidats = 9;
+            } else if (population < 500) {
+                minCandidats = 9;
+                maxCandidats = 13;
+            } else if (population < 1000) {
+                minCandidats = 13;
+                maxCandidats = 17;
+            } else if (population < 1500) {
+                minCandidats = 15;
+                maxCandidats = 17;
+            } else {
+                let nbConseillers;
+                if (population < 2500) nbConseillers = 19;
+                else if (population < 3500) nbConseillers = 23;
+                else if (population < 5000) nbConseillers = 27;
+                else if (population < 10000) nbConseillers = 29;
+                else if (population < 20000) nbConseillers = 33;
+                else if (population < 30000) nbConseillers = 35;
+                else if (population < 40000) nbConseillers = 39;
+                else if (population < 50000) nbConseillers = 43;
+                else if (population < 60000) nbConseillers = 45;
+                else if (population < 80000) nbConseillers = 49;
+                else if (population < 100000) nbConseillers = 53;
+                else if (population < 150000) nbConseillers = 55;
+                else if (population < 200000) nbConseillers = 59;
+                else if (population < 250000) nbConseillers = 61;
+                else if (population < 300000) nbConseillers = 65;
+                else nbConseillers = 69;
+                
+                minCandidats = nbConseillers;
+                maxCandidats = nbConseillers + 2;
+            }
+
+            const resultDiv = document.getElementById('result-listes');
+            resultDiv.innerHTML = `
+                <div class="result-animation bg-green-50 border border-green-200 rounded-lg p-4">
+                    <h3 class="text-lg font-semibold text-green-900 mb-3">Nombre de candidats requis</h3>
+                    <div class="text-center mb-4">
+                        <div class="text-3xl font-bold text-green-800">${minCandidats} à ${maxCandidats}</div>
+                        <div class="text-sm text-green-600">candidats sur la liste</div>
+                    </div>
+                    <div class="space-y-2 text-green-800">
+                        <p><strong>Population :</strong> ${population.toLocaleString()} habitants</p>
+                        <p><strong>Minimum requis :</strong> ${minCandidats} candidats</p>
+                        <p><strong>Maximum autorisé :</strong> ${maxCandidats} candidats</p>
+                    </div>
+                </div>
+            `;
+            resultDiv.classList.remove('hidden');
+        }
+    </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99515119a7eb03c3',t:'MTc2MTU1ODkxNi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
